@@ -2,11 +2,6 @@ export interface CommandSent {
   success: boolean;
 }
 
-export interface StatusResponse {
-  success: boolean;
-  RESULT: result;
-}
-
 export interface result {
   sp: number; // Temperature Set point (x10)
   wm: number; // Working Mode: 3=heating. 5=cooling
@@ -35,4 +30,9 @@ export interface result {
   fclFw?: number;
   uscm?: number;
   lastRefresh?: number;
+}
+
+export interface StatusResponse {
+  success: boolean;
+  RESULT: result;
 }

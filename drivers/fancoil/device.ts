@@ -15,9 +15,10 @@ class FancoilDevice extends Homey.Device {
     this.log('FancoilDevice has been initialized');
     await this.refreshStatus();
     clearInterval(this.refreshInterval);
+    // Refresh status every 2 minutes
     this.refreshInterval = setInterval(() => {
       this.refreshStatus();
-    }, 300000);
+    }, 120000);
 
     this.on('connected', (_address) => {
       this.setAvailable().catch(this.error);
@@ -48,6 +49,9 @@ class FancoilDevice extends Homey.Device {
       .then((res) => {
         if (!res) {
           throw new Error(errorMessage);
+        } else if (value) {
+          // Refresh status when turning on
+          this.refreshStatus();
         }
       })
       .catch(() => {
@@ -226,8 +230,20 @@ class FancoilDevice extends Homey.Device {
     this.setCapabilityValue('alarm_generic', result.a.length > 0).catch(this.error);
     if (result.a.length > 0) {
       this.setCapabilityOptions('alarm_generic', {
+        title: {
+          en: `Error${result.a.length > 1 ? 's' : ''}: ${result.a.join(', ')}`,
+        },
         insightsTitleTrue: {
-          en: `Current error message${result.a.length > 1 ? 's' : ''}: ${result.a.join(', ')}`,
+          en: `Error${result.a.length > 1 ? 's' : ''} reported: ${result.a.join(', ')}`,
+        },
+      }).catch(this.error);
+    } else {
+      this.setCapabilityOptions('alarm_generic', {
+        title: {
+          en: 'No errors, all good',
+        },
+        insightsTitleFalse: {
+          en: `No errors reported, all good`,
         },
       }).catch(this.error);
     }
