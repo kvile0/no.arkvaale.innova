@@ -22,5 +22,8 @@
   },
   "1.1.0": {
     "en": "Changed alarm insights and title"
+  },
+  "1.1.1": {
+    "en": "Small bugfixes and improvements"
   }
 }
